@@ -19,12 +19,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserListSerializer(serializers.ModelSerializer):
+    todos = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='description'
+     )
+
     class Meta:
         model = User
         fields = [
             'id',
             'username',
             'password',
+            'todos'
         ]
 
 
@@ -47,5 +54,3 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-    def to_representation(self, instance):
-        return UserSerializer(instance).to_representation(instance)

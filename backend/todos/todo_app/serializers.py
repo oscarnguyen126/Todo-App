@@ -8,15 +8,15 @@ class TodoSerializer(serializers.Serializer):
     is_expired = serializers.BooleanField(default=False)
     is_done = serializers.BooleanField(default=False)
 
+
     def create(self, validated_data):
-        return Todo.objects.create(**validated_data)
+        return Todo(**validated_data)
 
     def update(self, instance, validated_data):
         instance.description = validated_data['description']
         instance.complete_date = validated_data['complete_date']
         instance.is_expired = validated_data['is_expired']
         instance.is_done = validated_data['is_done']
-        instance.save()
         return instance
 
 

@@ -1,11 +1,15 @@
-from django.shortcuts import render
 from .models import User
 from .serializers import UserSerializer, UserListSerializer, UserUpdateSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import login
+from todo_app.models import Todo
+from todo_app.serializers import TodoSerializer
+from django.http import JsonResponse
+from rest_framework.parsers import JSONParser
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 class UserList(APIView):
@@ -49,3 +53,4 @@ class UserDetails(APIView):
         user = self.get_object(pk=pk)
         user.delete()
         return Response({"msg": "User deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
