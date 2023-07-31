@@ -3,6 +3,6 @@ from users import views
 
 
 urlpatterns = [
-    path("", views.UserList.as_view()),
+    path("register", views.UserList.as_view()),
     path("<int:pk>", views.UserDetails.as_view()),
 ]

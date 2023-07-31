@@ -43,14 +43,12 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'username',
             'new_password',
         ]
 
     def update(self, instance, validated_data):
         if validated_data.get("new_password"):
             instance.password = make_password(validated_data["new_password"])
-        instance.username = validated_data["username"]
         instance.save()
         return instance
 

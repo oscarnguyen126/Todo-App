@@ -4,15 +4,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from todo_app.models import Todo
-from todo_app.serializers import TodoSerializer
-from django.http import JsonResponse
 from rest_framework.parsers import JSONParser
-from django.views.decorators.csrf import csrf_exempt
-
+from rest_framework.permissions import IsAuthenticated
 
 
 class UserList(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return []
+        return super().get_permissions()
+
     def get(self, request):
         users = User.objects.all()
         return Response(
@@ -40,14 +43,14 @@ class UserDetails(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk):
-        user = self.get_object(pk=pk)
-        serializer = UserUpdateSerializer(user, data=request.data)
+        current_user = request.user
+        data = JSONParser().parse(request)
+        serializer = UserUpdateSerializer(current_user, data=data)
 
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
+            user.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
         user = self.get_object(pk=pk)
