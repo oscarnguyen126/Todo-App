@@ -20,10 +20,13 @@ class TodoList(APIView):
             if todo.complete_date < date.today():
                 todo.is_expired = True
 
-        data = request.GET.get("description")
-        if data:
-            todos = Todo.objects.filter(description__contains=data)
-            serializer = TodoSerializer(todos, many=True)
+        if request.GET.get("description"):
+            todos = Todo.objects.filter(description__icontains=request.GET.get("description"))
+            serializer = TodoListSerializer(todos, many=True)
+            return JsonResponse(serializer.data, safe=False)
+        elif request.GET.get("complete_date"):
+            todos = Todo.objects.filter(complete_date=request.GET.get("complete_date"))
+            serializer = TodoListSerializer(todos, many=True)
             return JsonResponse(serializer.data, safe=False)
 
         serializer = TodoListSerializer(todos, many=True)
