@@ -20,11 +20,21 @@ class BaseModel(Model):
     class Meta:
         database = db
 
-class TodoAppTodo(BaseModel):
+
+class User(BaseModel):
+    username = TextField()
+    password = TextField()
+
+    class Meta:
+        table_name = 'users_user'
+
+
+class Todos(BaseModel):
     description = TextField()
     is_done = BooleanField()
     complete_date = DateField()
     is_expired = BooleanField()
+    user = ForeignKeyField(User, backref='todos')
 
     class Meta:
         table_name = 'todo_app_todo'
@@ -32,7 +42,8 @@ class TodoAppTodo(BaseModel):
 
 
 fake = Faker()
-for i in range(0, 100):
-    q = TodoAppTodo.insert(description=fake.sentence(), is_done=fake.boolean(), complete_date=fake.date(), is_expired=fake.boolean()) 
-    q.execute()
-    db.close()
+users = [user for user in User.select()]
+for user in users:
+    for i in range(0, 1000):
+        q = Todos.create(description=fake.sentence(), is_done=fake.boolean(), complete_date=fake.date(), is_expired=fake.boolean(), user=user) 
+        db.close()
