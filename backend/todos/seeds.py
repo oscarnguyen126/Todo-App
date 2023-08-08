@@ -44,6 +44,33 @@ class Todos(BaseModel):
 fake = Faker()
 users = [user for user in User.select()]
 for user in users:
-    for i in range(0, 1000):
+    for i in range(0, 10000):
         q = Todos.create(description=fake.sentence(), is_done=fake.boolean(), complete_date=fake.date(), is_expired=fake.boolean(), user=user) 
         db.close()
+
+
+# TODO: concurrency
+# 1. Measure benchmark of current code
+# 2. Spawn multiple processes to perform seeding (3-4), then measure benchmark again
+
+
+# import process
+import concurrent.futures
+
+
+def seed_fn():
+    # pass
+#     fake = Faker()
+# users = [user for user in User.select()]
+# for user in users:
+#     for i in range(0, 1000):
+#         q = Todos.create(description=fake.sentence(), is_done=fake.boolean(), complete_date=fake.date(), is_expired=fake.boolean(), user=user) 
+#         db.close()
+
+thread_local = threading.local()
+# a_process = process.Process() = worker
+# b_process = process.Process()
+
+about race conditions
+
+[p.exec(seed_fn) for p in [a_process, b_process]]

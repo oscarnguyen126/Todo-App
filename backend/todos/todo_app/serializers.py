@@ -20,9 +20,7 @@ class TodoSerializer(serializers.Serializer):
         return instance
 
 
-class TodoListSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    description = serializers.CharField(max_length=255)
-    complete_date = serializers.DateField()
-    is_expired = serializers.BooleanField(default=False)
-    is_done = serializers.BooleanField(default=False)
+class TodoListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = ['id','description','complete_date', 'is_expired', 'is_done', 'user']
